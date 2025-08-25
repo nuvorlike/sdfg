@@ -92,7 +92,7 @@ const generateGame = () => {
         'assets/images/image7.jpg',
         'assets/images/image8.png',
         'assets/images/image9.jpg',
-        'assets/images/image10.png'
+        'assets/images/image10.jpg'
     ];
     const picks = pickRandom(images, (dimensions * dimensions) / 2);
     const items = shuffle([...picks, ...picks]);
