@@ -81,18 +81,18 @@ const generateGame = () => {
         throw new Error("The dimension of the board must be an even number.");
     }
 
-    // Replaced local image paths with placeholder URLs to ensure they load.
+    // Mengganti URL placeholder untuk menampilkan nama gambar, bukan hanya angka.
     const images = [
-        'https://placehold.co/100x100/EFEFEF/333?text=1',
-        'https://placehold.co/100x100/EFEFEF/333?text=2',
-        'https://placehold.co/100x100/EFEFEF/333?text=3',
-        'https://placehold.co/100x100/EFEFEF/333?text=4',
-        'https://placehold.co/100x100/EFEFEF/333?text=5',
-        'https://placehold.co/100x100/EFEFEF/333?text=6',
-        'https://placehold.co/100x100/EFEFEF/333?text=7',
-        'https://placehold.co/100x100/EFEFEF/333?text=8',
-        'https://placehold.co/100x100/EFEFEF/333?text=9',
-        'https://placehold.co/100x100/EFEFEF/333?text=10'
+        'https://placehold.co/100x100/EFEFEF/333?text=Image1',
+        'https://placehold.co/100x100/EFEFEF/333?text=Image2',
+        'https://placehold.co/100x100/EFEFEF/333?text=Image3',
+        'https://placehold.co/100x100/EFEFEF/333?text=Image4',
+        'https://placehold.co/100x100/EFEFEF/333?text=Image5',
+        'https://placehold.co/100x100/EFEFEF/333?text=Image6',
+        'https://placehold.co/100x100/EFEFEF/333?text=Image7',
+        'https://placehold.co/100x100/EFEFEF/333?text=Image8',
+        'https://placehold.co/100x100/EFEFEF/333?text=Image9',
+        'https://placehold.co/100x100/EFEFEF/333?text=Image10'
     ];
     const picks = pickRandom(images, (dimensions * dimensions) / 2);
     const items = shuffle([...picks, ...picks]);
