@@ -1,294 +1,249 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Memory Card Game</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;600;700&display=swap" rel="stylesheet">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        /* * MODERNIZED STYLES FOR THE MEMORY GAME
-         * * Key Changes:
-         * - CSS variables for easy theme management (colors, sizes, etc.).
-         * - A modern, dark color palette.
-         * - Flexbox for centering and layout, which is more robust.
-         * - Smoother, cleaner animations (removed the 'rotateZ' for a more natural card flip).
-         * - Refined box-shadows for a subtle depth effect.
-         * - Improved button and UI element styling with hover effects.
-         * - Enhanced responsiveness for a wider range of screen sizes.
-        */
-        
-        :root {
-            --bg-gradient-start: #1D2B64;
-            --bg-gradient-end: #0F0C29;
-            --primary-text: #F5F5F5;
-            --secondary-text: #333;
-            --card-bg: #283593;
-            --card-face-bg: #E8EAF6;
-            --accent-color: #536DFE;
-            --accent-hover: #7986CB;
-            --win-bg: #ffffff;
-            --shadow-color: rgba(0, 0, 0, 0.4);
-            --border-radius: 8px;
-            --card-size: 100px;
-            --gap-size: 16px;
-        }
+html {
+    width: 100%;
+    height: 100%;
+    /* Gradien latar belakang baru dengan nuansa biru dan hijau */
+    background: linear-gradient(325deg, #003973 0%, #005f73 50%, #0a9396 100%);
+    font-family: 'Lexend', sans-serif;
+}
 
-        html {
-            width: 100%;
-            height: 100%;
-            font-family: 'Lexend', sans-serif;
-        }
+body {
+    overflow: hidden;
+}
 
-        body {
-            margin: 0;
-            padding: 20px;
-            box-sizing: border-box;
-            background: linear-gradient(325deg, var(--bg-gradient-start) 0%, var(--bg-gradient-end) 100%);
-            color: var(--primary-text);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            overflow: hidden;
-        }
+.game {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
 
-        .game {
-            width: 100%;
-            max-width: 540px; /* (4 * card size) + (3 * gap size) + padding */
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
+.controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    margin-bottom: 20px;
+}
 
-        .controls {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            width: 100%;
-            margin-bottom: 24px;
-            gap: 16px;
-        }
+#rulesBtn {
+    flex: 1;
+    margin-right: 10px;
+    /* Warna tombol baru */
+    background: #001219;
+    color: #e9d8a6;
+    border-radius: 5px;
+    padding: 10px 20px;
+    border: 0;
+    cursor: pointer;
+    font-family: 'Lexend', sans-serif;
+    font-size: 18pt;
+    /* Bayangan yang disesuaikan */
+    box-shadow: 5px 3px 15px 1px #00000080;
+    transition: all 0.5s;
+}
 
-        #rulesBtn {
-            background: var(--accent-color);
-            color: var(--primary-text);
-            border-radius: var(--border-radius);
-            padding: 12px 24px;
-            border: none;
-            cursor: pointer;
-            font-family: 'Lexend', sans-serif;
-            font-size: 16px;
-            font-weight: 600;
-            box-shadow: 0 4px 15px var(--shadow-color);
-            transition: background-color 0.3s ease, transform 0.2s ease;
-        }
+#rulesBtn:hover {
+    /* Warna hover baru */
+    color: #ffffff;
+    background-color: #005f73;
+}
 
-        #rulesBtn:hover {
-            background-color: var(--accent-hover);
-            transform: translateY(-2px);
-        }
+.stats {
+    flex: 2;
+    display: flex;
+    justify-content: space-around;
+    /* Warna teks statistik baru */
+    color: #e9d8a6;
+    font-size: 14pt;
+    /* Warna border baru */
+    border: 1px dotted #94d2bd;
+    padding: 10px;
+    border-radius: 7px;
+    /* Bayangan yang disesuaikan */
+    box-shadow: 5px 3px 15px 1px #00000080;
+}
 
-        .stats {
-            flex-grow: 1;
-            display: flex;
-            justify-content: space-around;
-            font-size: 16px;
-            background-color: rgba(255, 255, 255, 0.1);
-            padding: 12px;
-            border-radius: var(--border-radius);
-            box-shadow: 0 4px 15px var(--shadow-color);
-        }
+.board-container {
+    position: relative;
+}
 
-        .board-container {
-            position: relative;
-            perspective: 1000px; /* Add perspective for 3D effect */
-        }
+.board, .win {
+    border-radius: 5px;
+    box-shadow: 0 25px 50px rgb(33 33 33 / 25%);
+    /* Gradien papan permainan baru */
+    background: linear-gradient(135deg, #94d2bd 0%, #0a9396 50%, #005f73 100%);
+    transition: transform .6s cubic-bezier(0.4, 0.0, 0.2, 1);
+    backface-visibility: hidden;
+}
 
-        .board, .win {
-            border-radius: var(--border-radius);
-            box-shadow: 0 10px 30px var(--shadow-color);
-            background: rgba(255, 255, 255, 0.1);
-            transition: transform 0.7s cubic-bezier(0.68, -0.55, 0.27, 1.55);
-            backface-visibility: hidden;
-        }
+.board {
+    padding: 20px;
+    display: grid;
+    grid-template-columns: repeat(4, auto);
+    grid-gap: 20px;
+}
 
-        .board {
-            padding: var(--gap-size);
-            display: grid;
-            grid-template-columns: repeat(4, var(--card-size));
-            grid-gap: var(--gap-size);
-        }
+.board-container.flipped .board {
+    transform: rotateY(180deg) rotateZ(50deg);
+}
 
-        .board-container.flipped .board {
-            transform: rotateY(180deg);
-        }
+.board-container.flipped .win {
+    transform: rotateY(0) rotateZ(0);
+}
 
-        .board-container.flipped .win {
-            transform: rotateY(0);
-        }
+.card {
+    position: relative;
+    width: 100px;
+    height: 100px;
+    cursor: pointer;
+}
 
-        .card {
-            position: relative;
-            width: var(--card-size);
-            height: var(--card-size);
-            cursor: pointer;
-            transform-style: preserve-3d; /* Ensure children are treated in 3D space */
-        }
+.card-front, .card-back {
+    position: absolute;
+    border-radius: 5px;
+    width: 100%;
+    height: 100%;
+    /* Warna depan kartu baru */
+    background: #001219;
+    transition: transform .6s cubic-bezier(0.4, 0.0, 0.2, 1);
+    backface-visibility: hidden;
+}
 
-        .card-front, .card-back {
-            position: absolute;
-            border-radius: var(--border-radius);
-            width: 100%;
-            height: 100%;
-            background: var(--card-bg);
-            transition: transform 0.6s cubic-bezier(0.4, 0.0, 0.2, 1);
-            backface-visibility: hidden;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-        
-        /* Simple pattern for the card front */
-        .card-front::before {
-            content: '?';
-            font-size: 48px;
-            font-weight: 700;
-            color: var(--primary-text);
-        }
+.card-back {
+    transform: rotateY(180deg) rotateZ(50deg);
+    user-select: none;
+    /* Warna belakang kartu baru */
+    background: #e9d8a6;
+}
 
-        .card-back {
-            transform: rotateY(180deg);
-            user-select: none;
-            background: var(--card-face-bg);
-        }
+.card-back img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
 
-        .card-back img {
-            width: 90%;
-            height: 90%;
-            object-fit: contain; /* Use contain to avoid cropping */
-        }
+.card.flipped .card-front {
+    transform: rotateY(180deg) rotateZ(50deg);
+}
 
-        .card.flipped {
-            transform: rotateY(180deg);
-        }
+.card.flipped .card-back {
+    transform: rotateY(0) rotateZ(0);
+}
 
-        .win {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            text-align: center;
-            background: var(--win-bg);
-            color: var(--secondary-text);
-            transform: rotateY(180deg);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-            box-sizing: border-box;
-        }
-        
-        .win h2 {
-            font-size: 2.5rem;
-            margin-bottom: 8px;
-        }
-        
-        .win p {
-            font-size: 1.2rem;
-            margin-bottom: 24px;
-        }
+.win {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    /* Warna layar kemenangan baru */
+    background: #e9d8a6;
+    transform: rotateY(180deg) rotateZ(50deg);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
 
-        #shareBtn, #replayBtn {
-            font-size: 16px;
-            background: var(--accent-color);
-            color: var(--primary-text);
-            border-radius: var(--border-radius);
-            padding: 12px 24px;
-            border: 0;
-            cursor: pointer;
-            font-family: 'Lexend', sans-serif;
-            margin: 10px;
-            transition: background-color 0.3s ease, transform 0.2s ease;
-        }
-        
-        #shareBtn:hover, #replayBtn:hover {
-            background-color: var(--accent-hover);
-            transform: translateY(-2px);
-        }
+#shareBtn, #replayBtn {
+    font-size: 16pt;
+    /* Warna tombol baru */
+    background: #001219;
+    color: #e9d8a6;
+    border-radius: 5px;
+    padding: 10px 20px;
+    border: 0;
+    cursor: pointer;
+    font-family: 'Lexend', sans-serif;
+    margin: 10px;
+}
 
-        /* Responsive adjustments */
-        @media (max-width: 600px) {
-            :root {
-                --card-size: 70px;
-                --gap-size: 12px;
-            }
-            .game {
-                max-width: 100%;
-            }
-            .board {
-                 grid-template-columns: repeat(4, var(--card-size));
-            }
-            .controls {
-                flex-direction: column;
-            }
-            .stats {
-                width: 100%;
-            }
-        }
-    </style>
-</head>
-<body>
+.popup {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.4);
+}
 
-    <!-- This is the main game container -->
-    <div class="game">
-        <!-- Controls and stats section -->
-        <div class="controls">
-            <button id="rulesBtn">Rules</button>
-            <div class="stats">
-                <div class="moves">Moves: <span>0</span></div>
-                <div class="time">Time: <span>0s</span></div>
-            </div>
-        </div>
+.popup-content {
+    background-color: #fefefe;
+    margin: 15% auto;
+    padding: 20px;
+    /* Warna border popup baru */
+    border: 1px solid #005f73;
+    width: 80%;
+    max-width: 600px;
+    border-radius: 5px;
+}
 
-        <!-- Board container for the 3D flip effect -->
-        <div class="board-container">
-            <!-- The game board with cards -->
-            <div class="board">
-                <!-- Cards would be generated by JavaScript, here are placeholders -->
-                <div class="card"><div class="card-front"></div><div class="card-back"><img src="https://placehold.co/100x100/E8EAF6/333?text=A" alt="Card A"></div></div>
-                <div class="card"><div class="card-front"></div><div class="card-back"><img src="https://placehold.co/100x100/E8EAF6/333?text=B" alt="Card B"></div></div>
-                <div class="card"><div class="card-front"></div><div class="card-back"><img src="https://placehold.co/100x100/E8EAF6/333?text=C" alt="Card C"></div></div>
-                <div class="card"><div class="card-front"></div><div class="card-back"><img src="https://placehold.co/100x100/E8EAF6/333?text=D" alt="Card D"></div></div>
-                <div class="card"><div class="card-front"></div><div class="card-back"><img src="https://placehold.co/100x100/E8EAF6/333?text=E" alt="Card E"></div></div>
-                <div class="card"><div class="card-front"></div><div class="card-back"><img src="https://placehold.co/100x100/E8EAF6/333?text=F" alt="Card F"></div></div>
-                <div class="card"><div class="card-front"></div><div class="card-back"><img src="https://placehold.co/100x100/E8EAF6/333?text=G" alt="Card G"></div></div>
-                <div class="card"><div class="card-front"></div><div class="card-back"><img src="https://placehold.co/100x100/E8EAF6/333?text=H" alt="Card H"></div></div>
-                <div class="card"><div class="card-front"></div><div class="card-back"><img src="https://placehold.co/100x100/E8EAF6/333?text=A" alt="Card A"></div></div>
-                <div class="card"><div class="card-front"></div><div class="card-back"><img src="https://placehold.co/100x100/E8EAF6/333?text=B" alt="Card B"></div></div>
-                <div class="card"><div class="card-front"></div><div class="card-back"><img src="https://placehold.co/100x100/E8EAF6/333?text=C" alt="Card C"></div></div>
-                <div class="card"><div class="card-front"></div><div class="card-back"><img src="https://placehold.co/100x100/E8EAF6/333?text=D" alt="Card D"></div></div>
-                <div class="card"><div class="card-front"></div><div class="card-back"><img src="https://placehold.co/100x100/E8EAF6/333?text=E" alt="Card E"></div></div>
-                <div class="card"><div class="card-front"></div><div class="card-back"><img src="https://placehold.co/100x100/E8EAF6/333?text=F" alt="Card F"></div></div>
-                <div class="card"><div class="card-front"></div><div class="card-back"><img src="https://placehold.co/100x100/E8EAF6/333?text=G" alt="Card G"></div></div>
-                <div class="card"><div class="card-front"></div><div class="card-back"><img src="https://placehold.co/100x100/E8EAF6/333?text=H" alt="Card H"></div></div>
-            </div>
+.scorecard-img {
+    max-width: 100%;
+    height: auto;
+    margin: 20px 0;
+    border-radius: 5px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
 
-            <!-- The win screen -->
-            <div class="win">
-                <h2>You Won!</h2>
-                <p>Congratulations!</p>
-                <div>
-                    <button id="replayBtn">Play Again</button>
-                    <button id="shareBtn">Share</button>
-                </div>
-            </div>
-        </div>
-    </div>
+.close {
+    /* Warna tombol tutup yang disesuaikan */
+    color: #999;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
 
-</body>
-</html>
+.close:hover, .close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.error-message {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* Gradien latar belakang baru yang sama dengan body */
+    background: linear-gradient(325deg, #003973 0%, #005f73 50%, #0a9396 100%);
+    z-index: 1000;
+}
+
+.error-message h1 {
+    color: white;
+    text-align: center;
+    font-family: 'Lexend', sans-serif;
+    font-size: 24px;
+    padding: 20px;
+}
+
+@media (max-width: 700px) {
+    .board-container {
+        width: 370px;
+    } 
+
+    .card {
+        width: 70px;
+        height: 70px;
+    }
+
+    .card-back {
+        line-height: 70px;
+    }
+
+    .card-back img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+}
