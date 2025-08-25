@@ -81,17 +81,18 @@ const generateGame = () => {
         throw new Error("The dimension of the board must be an even number.");
     }
 
+    // Replaced local image paths with placeholder URLs to ensure they load.
     const images = [
-        'assets/images/image1.jpg',
-        'assets/images/image2.jpg',
-        'assets/images/image3.jpg',
-        'assets/images/image4.jpg',
-        'assets/images/image5.jpg',
-        'assets/images/image6.jpg',
-        'assets/images/image7.jpg',
-        'assets/images/image8.jpg',
-        'assets/images/image9.jpg',
-        'assets/images/image10.png'
+        'https://placehold.co/100x100/EFEFEF/333?text=1',
+        'https://placehold.co/100x100/EFEFEF/333?text=2',
+        'https://placehold.co/100x100/EFEFEF/333?text=3',
+        'https://placehold.co/100x100/EFEFEF/333?text=4',
+        'https://placehold.co/100x100/EFEFEF/333?text=5',
+        'https://placehold.co/100x100/EFEFEF/333?text=6',
+        'https://placehold.co/100x100/EFEFEF/333?text=7',
+        'https://placehold.co/100x100/EFEFEF/333?text=8',
+        'https://placehold.co/100x100/EFEFEF/333?text=9',
+        'https://placehold.co/100x100/EFEFEF/333?text=10'
     ];
     const picks = pickRandom(images, (dimensions * dimensions) / 2);
     const items = shuffle([...picks, ...picks]);
@@ -100,7 +101,7 @@ const generateGame = () => {
             ${items.map(item => `
                 <div class="card">
                     <div class="card-front"></div>
-                    <div class="card-back"><img src="${item}" alt="card image"></div>
+                    <div class="card-back"><img src="${item}" alt="card image" onerror="this.onerror=null;this.src='https://placehold.co/100x100?text=Error';"></div>
                 </div>
             `).join('')}
         </div>
@@ -121,7 +122,9 @@ const startGame = () => {
 const flipBackCards = () => {
     const unmatchedCards = state.currentFlipped.filter(card => !card.classList.contains('matched'));
     if (unmatchedCards.length > 0) {
-        document.getElementById('noMatchSound').play();
+        // Assuming you have an audio element with id 'noMatchSound'
+        const noMatchSound = document.getElementById('noMatchSound');
+        if (noMatchSound) noMatchSound.play();
         unmatchedCards.forEach(card => card.classList.remove('flipped'));
     }
     state.flippedCards = 0;
@@ -147,7 +150,9 @@ const flipCard = card => {
         if (card1.querySelector('.card-back img').src === card2.querySelector('.card-back img').src) {
             card1.classList.add('matched');
             card2.classList.add('matched');
-            document.getElementById('matchSound').play();
+            // Assuming you have an audio element with id 'matchSound'
+            const matchSound = document.getElementById('matchSound');
+            if (matchSound) matchSound.play();
         }
 
         setTimeout(() => {
@@ -187,9 +192,11 @@ const attachEventListeners = () => {
         }
     });
 
-    closeBtn.addEventListener('click', () => {
-        rulesPopup.style.display = 'none';
-    });
+    if (closeBtn) {
+        closeBtn.addEventListener('click', () => {
+            rulesPopup.style.display = 'none';
+        });
+    }
 
     window.addEventListener('click', (event) => {
         if (event.target === rulesPopup) {
@@ -198,9 +205,13 @@ const attachEventListeners = () => {
     });
 };
 
+// Check if running on a mobile device
 if (/Android|iPhone/i.test(navigator.userAgent)) {
-    document.body.innerHTML = '<div class="error-message"><h1>This game is supported only on PC or in desktop mode.</h1></div>';
+    document.body.innerHTML = '<div class="error-message" style="text-align: center; padding: 20px; font-family: sans-serif;"><h1>This game is supported only on PC or in desktop mode.</h1></div>';
 } else {
-    generateGame();
-    attachEventListeners();
+    // Ensure the DOM is fully loaded before running the game logic
+    document.addEventListener('DOMContentLoaded', () => {
+        generateGame();
+        attachEventListeners();
+    });
 }
