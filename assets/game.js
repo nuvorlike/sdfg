@@ -83,16 +83,16 @@ const generateGame = () => {
 
     // Mengganti URL placeholder untuk menampilkan nama gambar, bukan hanya angka.
     const images = [
-        'https://placehold.co/100x100/EFEFEF/333?text=Image1',
-        'https://placehold.co/100x100/EFEFEF/333?text=Image2',
-        'https://placehold.co/100x100/EFEFEF/333?text=Image3',
-        'https://placehold.co/100x100/EFEFEF/333?text=Image4',
-        'https://placehold.co/100x100/EFEFEF/333?text=Image5',
-        'https://placehold.co/100x100/EFEFEF/333?text=Image6',
-        'https://placehold.co/100x100/EFEFEF/333?text=Image7',
-        'https://placehold.co/100x100/EFEFEF/333?text=Image8',
-        'https://placehold.co/100x100/EFEFEF/333?text=Image9',
-        'https://placehold.co/100x100/EFEFEF/333?text=Image10'
+        'assets/images/image1.jpg',
+        'assets/images/image2.jpg',
+        'assets/images/image3.jpg',
+        'assets/images/image4.jpg',
+        'assets/images/image5.jpg',
+        'assets/images/image6.jpg',
+        'assets/images/image7.jpg',
+        'assets/images/image8.png',
+        'assets/images/image9.jpg',
+        'assets/images/image10.jpg'
     ];
     const picks = pickRandom(images, (dimensions * dimensions) / 2);
     const items = shuffle([...picks, ...picks]);
