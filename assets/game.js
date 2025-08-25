@@ -43,7 +43,7 @@ const generateTweetText = () => {
     const moves = state.totalFlips;
     const time = state.totalTime;
     const gameLink = window.location.href;
-    return `I just completed Brain Train Game (made by @Zun2025) with ${moves} moves under ${time} secs\n\nTry it out this @sign themed game : ${gameLink}`;
+    return `I just completed Brain Train Game (made by @AlicommPng) with ${moves} moves under ${time} secs\n\nTry it out this @sign themed game : ${gameLink}`;
 };
 
 const generateScorecardImage = () => {
@@ -70,7 +70,7 @@ const generateScorecardImage = () => {
 
     ctx.font = '20px Lexend';
     ctx.fillStyle = '#6f00fc';
-    ctx.fillText('Made by @Zun2025', canvas.width / 2, 260);
+    ctx.fillText('Made by @AlicommPng', canvas.width / 2, 260);
 
     return canvas.toDataURL('image/png');
 };
