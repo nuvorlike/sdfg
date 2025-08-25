@@ -82,16 +82,15 @@ const generateGame = () => {
     }
 
     // Menggunakan path gambar lokal sesuai permintaan Anda.
-    // Pastikan path ini benar relatif terhadap file HTML Anda.
     const images = [
-        'assets/images/image1.png',
+        'assets/images/image1.jpg',
         'assets/images/image2.jpg',
         'assets/images/image3.jpg',
         'assets/images/image4.jpg',
         'assets/images/image5.jpg',
         'assets/images/image6.jpg',
         'assets/images/image7.jpg',
-        'assets/images/image8.png',
+        'assets/images/image8.jpg',
         'assets/images/image9.jpg',
         'assets/images/image10.png'
     ];
@@ -109,10 +108,9 @@ const generateGame = () => {
     `;
     
     const parser = new DOMParser().parseFromString(cards, 'text/html');
-    // It's better to get a new reference to the board after replacing it
     const newBoard = parser.querySelector('.board');
     selectors.board.parentNode.replaceChild(newBoard, selectors.board);
-    selectors.board = newBoard; // Update the selector to the new board
+    selectors.board = newBoard; // Update selector ke papan yang baru
 };
 
 const startGame = () => {
@@ -126,7 +124,6 @@ const startGame = () => {
 const flipBackCards = () => {
     const unmatchedCards = state.currentFlipped.filter(card => !card.classList.contains('matched'));
     if (unmatchedCards.length > 0) {
-        // Assuming you have an audio element with id 'noMatchSound'
         const noMatchSound = document.getElementById('noMatchSound');
         if (noMatchSound) noMatchSound.play();
         unmatchedCards.forEach(card => card.classList.remove('flipped'));
@@ -154,7 +151,6 @@ const flipCard = card => {
         if (card1.querySelector('.card-back img').src === card2.querySelector('.card-back img').src) {
             card1.classList.add('matched');
             card2.classList.add('matched');
-            // Assuming you have an audio element with id 'matchSound'
             const matchSound = document.getElementById('matchSound');
             if (matchSound) matchSound.play();
         }
@@ -164,7 +160,6 @@ const flipCard = card => {
         }, 1000);
     }
 
-    // Use the updated board selector to query for cards
     if (!selectors.board.querySelectorAll('.card:not(.flipped)').length) {
         setTimeout(() => {
             const scorecardImg = generateScorecardImage();
