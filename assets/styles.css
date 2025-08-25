@@ -1,234 +1,294 @@
-html {
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(325deg, #6f00fc 0%, #fc7900 50%, #fcc500b9 100%);
-    font-family: 'Lexend', sans-serif;
-}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Memory Card Game</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* * MODERNIZED STYLES FOR THE MEMORY GAME
+         * * Key Changes:
+         * - CSS variables for easy theme management (colors, sizes, etc.).
+         * - A modern, dark color palette.
+         * - Flexbox for centering and layout, which is more robust.
+         * - Smoother, cleaner animations (removed the 'rotateZ' for a more natural card flip).
+         * - Refined box-shadows for a subtle depth effect.
+         * - Improved button and UI element styling with hover effects.
+         * - Enhanced responsiveness for a wider range of screen sizes.
+        */
+        
+        :root {
+            --bg-gradient-start: #1D2B64;
+            --bg-gradient-end: #0F0C29;
+            --primary-text: #F5F5F5;
+            --secondary-text: #333;
+            --card-bg: #283593;
+            --card-face-bg: #E8EAF6;
+            --accent-color: #536DFE;
+            --accent-hover: #7986CB;
+            --win-bg: #ffffff;
+            --shadow-color: rgba(0, 0, 0, 0.4);
+            --border-radius: 8px;
+            --card-size: 100px;
+            --gap-size: 16px;
+        }
 
-body {
-    overflow: hidden;
-}
+        html {
+            width: 100%;
+            height: 100%;
+            font-family: 'Lexend', sans-serif;
+        }
 
-.game {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-}
+        body {
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+            background: linear-gradient(325deg, var(--bg-gradient-start) 0%, var(--bg-gradient-end) 100%);
+            color: var(--primary-text);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden;
+        }
 
-.controls {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 100%;
-    margin-bottom: 20px;
-}
+        .game {
+            width: 100%;
+            max-width: 540px; /* (4 * card size) + (3 * gap size) + padding */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
 
-#rulesBtn {
-    flex: 1;
-    margin-right: 10px;
-    background: #282A3A;
-    color: #FFF;
-    border-radius: 5px;
-    padding: 10px 20px;
-    border: 0;
-    cursor: pointer;
-    font-family: 'Lexend', sans-serif;
-    font-size: 18pt;
-    box-shadow: 5px 3px 15px 1px darkblue;
-    transition: all 0.5s;
-}
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            margin-bottom: 24px;
+            gap: 16px;
+        }
 
-#rulesBtn:hover {
-    color: #ed977c;
-    background-color: #3e415a;
-}
+        #rulesBtn {
+            background: var(--accent-color);
+            color: var(--primary-text);
+            border-radius: var(--border-radius);
+            padding: 12px 24px;
+            border: none;
+            cursor: pointer;
+            font-family: 'Lexend', sans-serif;
+            font-size: 16px;
+            font-weight: 600;
+            box-shadow: 0 4px 15px var(--shadow-color);
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
 
-.stats {
-    flex: 2;
-    display: flex;
-    justify-content: space-around;
-    color: #FFF;
-    font-size: 14pt;
-    border: 1px dotted floralwhite;
-    padding: 10px;
-    border-radius: 7px;
-    box-shadow: 5px 3px 15px 1px darkblue;
-}
+        #rulesBtn:hover {
+            background-color: var(--accent-hover);
+            transform: translateY(-2px);
+        }
 
-.board-container {
-    position: relative;
-}
+        .stats {
+            flex-grow: 1;
+            display: flex;
+            justify-content: space-around;
+            font-size: 16px;
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 12px;
+            border-radius: var(--border-radius);
+            box-shadow: 0 4px 15px var(--shadow-color);
+        }
 
-.board, .win {
-    border-radius: 5px;
-    box-shadow: 0 25px 50px rgb(33 33 33 / 25%);
-    background: linear-gradient(135deg, #ffff00a8 0%, #ff7b00 50%, #ff2a00 100%);
-    transition: transform .6s cubic-bezier(0.4, 0.0, 0.2, 1);
-    backface-visibility: hidden;
-}
+        .board-container {
+            position: relative;
+            perspective: 1000px; /* Add perspective for 3D effect */
+        }
 
-.board {
-    padding: 20px;
-    display: grid;
-    grid-template-columns: repeat(4, auto);
-    grid-gap: 20px;
-}
+        .board, .win {
+            border-radius: var(--border-radius);
+            box-shadow: 0 10px 30px var(--shadow-color);
+            background: rgba(255, 255, 255, 0.1);
+            transition: transform 0.7s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+            backface-visibility: hidden;
+        }
 
-.board-container.flipped .board {
-    transform: rotateY(180deg) rotateZ(50deg);
-}
+        .board {
+            padding: var(--gap-size);
+            display: grid;
+            grid-template-columns: repeat(4, var(--card-size));
+            grid-gap: var(--gap-size);
+        }
 
-.board-container.flipped .win {
-    transform: rotateY(0) rotateZ(0);
-}
+        .board-container.flipped .board {
+            transform: rotateY(180deg);
+        }
 
-.card {
-    position: relative;
-    width: 100px;
-    height: 100px;
-    cursor: pointer;
-}
+        .board-container.flipped .win {
+            transform: rotateY(0);
+        }
 
-.card-front, .card-back {
-    position: absolute;
-    border-radius: 5px;
-    width: 100%;
-    height: 100%;
-    background: #3a3328;
-    transition: transform .6s cubic-bezier(0.4, 0.0, 0.2, 1);
-    backface-visibility: hidden;
-}
+        .card {
+            position: relative;
+            width: var(--card-size);
+            height: var(--card-size);
+            cursor: pointer;
+            transform-style: preserve-3d; /* Ensure children are treated in 3D space */
+        }
 
-.card-back {
-    transform: rotateY(180deg) rotateZ(50deg);
-    user-select: none;
-    background: #FDF8E6;
-}
+        .card-front, .card-back {
+            position: absolute;
+            border-radius: var(--border-radius);
+            width: 100%;
+            height: 100%;
+            background: var(--card-bg);
+            transition: transform 0.6s cubic-bezier(0.4, 0.0, 0.2, 1);
+            backface-visibility: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        /* Simple pattern for the card front */
+        .card-front::before {
+            content: '?';
+            font-size: 48px;
+            font-weight: 700;
+            color: var(--primary-text);
+        }
 
-.card-back img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
+        .card-back {
+            transform: rotateY(180deg);
+            user-select: none;
+            background: var(--card-face-bg);
+        }
 
-.card.flipped .card-front {
-    transform: rotateY(180deg) rotateZ(50deg);
-}
+        .card-back img {
+            width: 90%;
+            height: 90%;
+            object-fit: contain; /* Use contain to avoid cropping */
+        }
 
-.card.flipped .card-back {
-    transform: rotateY(0) rotateZ(0);
-}
+        .card.flipped {
+            transform: rotateY(180deg);
+        }
 
-.win {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    text-align: center;
-    background: #FDF8E6;
-    transform: rotateY(180deg) rotateZ(50deg);
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    padding: 20px;
-}
+        .win {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            background: var(--win-bg);
+            color: var(--secondary-text);
+            transform: rotateY(180deg);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        
+        .win h2 {
+            font-size: 2.5rem;
+            margin-bottom: 8px;
+        }
+        
+        .win p {
+            font-size: 1.2rem;
+            margin-bottom: 24px;
+        }
 
-#shareBtn, #replayBtn {
-    font-size: 16pt;
-    background: #282A3A;
-    color: #FFF;
-    border-radius: 5px;
-    padding: 10px 20px;
-    border: 0;
-    cursor: pointer;
-    font-family: 'Lexend', sans-serif;
-    margin: 10px;
-}
+        #shareBtn, #replayBtn {
+            font-size: 16px;
+            background: var(--accent-color);
+            color: var(--primary-text);
+            border-radius: var(--border-radius);
+            padding: 12px 24px;
+            border: 0;
+            cursor: pointer;
+            font-family: 'Lexend', sans-serif;
+            margin: 10px;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+        
+        #shareBtn:hover, #replayBtn:hover {
+            background-color: var(--accent-hover);
+            transform: translateY(-2px);
+        }
 
-.popup {
-    display: none;
-    position: fixed;
-    z-index: 1;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    overflow: auto;
-    background-color: rgba(0,0,0,0.4);
-}
+        /* Responsive adjustments */
+        @media (max-width: 600px) {
+            :root {
+                --card-size: 70px;
+                --gap-size: 12px;
+            }
+            .game {
+                max-width: 100%;
+            }
+            .board {
+                 grid-template-columns: repeat(4, var(--card-size));
+            }
+            .controls {
+                flex-direction: column;
+            }
+            .stats {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
 
-.popup-content {
-    background-color: #fefefe;
-    margin: 15% auto;
-    padding: 20px;
-    border: 1px solid #888;
-    width: 80%;
-    max-width: 600px;
-    border-radius: 5px;
-}
+    <!-- This is the main game container -->
+    <div class="game">
+        <!-- Controls and stats section -->
+        <div class="controls">
+            <button id="rulesBtn">Rules</button>
+            <div class="stats">
+                <div class="moves">Moves: <span>0</span></div>
+                <div class="time">Time: <span>0s</span></div>
+            </div>
+        </div>
 
-.scorecard-img {
-    max-width: 100%;
-    height: auto;
-    margin: 20px 0;
-    border-radius: 5px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-}
+        <!-- Board container for the 3D flip effect -->
+        <div class="board-container">
+            <!-- The game board with cards -->
+            <div class="board">
+                <!-- Cards would be generated by JavaScript, here are placeholders -->
+                <div class="card"><div class="card-front"></div><div class="card-back"><img src="https://placehold.co/100x100/E8EAF6/333?text=A" alt="Card A"></div></div>
+                <div class="card"><div class="card-front"></div><div class="card-back"><img src="https://placehold.co/100x100/E8EAF6/333?text=B" alt="Card B"></div></div>
+                <div class="card"><div class="card-front"></div><div class="card-back"><img src="https://placehold.co/100x100/E8EAF6/333?text=C" alt="Card C"></div></div>
+                <div class="card"><div class="card-front"></div><div class="card-back"><img src="https://placehold.co/100x100/E8EAF6/333?text=D" alt="Card D"></div></div>
+                <div class="card"><div class="card-front"></div><div class="card-back"><img src="https://placehold.co/100x100/E8EAF6/333?text=E" alt="Card E"></div></div>
+                <div class="card"><div class="card-front"></div><div class="card-back"><img src="https://placehold.co/100x100/E8EAF6/333?text=F" alt="Card F"></div></div>
+                <div class="card"><div class="card-front"></div><div class="card-back"><img src="https://placehold.co/100x100/E8EAF6/333?text=G" alt="Card G"></div></div>
+                <div class="card"><div class="card-front"></div><div class="card-back"><img src="https://placehold.co/100x100/E8EAF6/333?text=H" alt="Card H"></div></div>
+                <div class="card"><div class="card-front"></div><div class="card-back"><img src="https://placehold.co/100x100/E8EAF6/333?text=A" alt="Card A"></div></div>
+                <div class="card"><div class="card-front"></div><div class="card-back"><img src="https://placehold.co/100x100/E8EAF6/333?text=B" alt="Card B"></div></div>
+                <div class="card"><div class="card-front"></div><div class="card-back"><img src="https://placehold.co/100x100/E8EAF6/333?text=C" alt="Card C"></div></div>
+                <div class="card"><div class="card-front"></div><div class="card-back"><img src="https://placehold.co/100x100/E8EAF6/333?text=D" alt="Card D"></div></div>
+                <div class="card"><div class="card-front"></div><div class="card-back"><img src="https://placehold.co/100x100/E8EAF6/333?text=E" alt="Card E"></div></div>
+                <div class="card"><div class="card-front"></div><div class="card-back"><img src="https://placehold.co/100x100/E8EAF6/333?text=F" alt="Card F"></div></div>
+                <div class="card"><div class="card-front"></div><div class="card-back"><img src="https://placehold.co/100x100/E8EAF6/333?text=G" alt="Card G"></div></div>
+                <div class="card"><div class="card-front"></div><div class="card-back"><img src="https://placehold.co/100x100/E8EAF6/333?text=H" alt="Card H"></div></div>
+            </div>
 
-.close {
-    color: #aaa;
-    float: right;
-    font-size: 28px;
-    font-weight: bold;
-}
+            <!-- The win screen -->
+            <div class="win">
+                <h2>You Won!</h2>
+                <p>Congratulations!</p>
+                <div>
+                    <button id="replayBtn">Play Again</button>
+                    <button id="shareBtn">Share</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
-.close:hover, .close:focus {
-    color: black;
-    text-decoration: none;
-    cursor: pointer;
-}
-
-.error-message {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background: linear-gradient(325deg, #6f00fc 0%, #fc7900 50%, #fcc500b9 100%);
-    z-index: 1000;
-}
-
-.error-message h1 {
-    color: white;
-    text-align: center;
-    font-family: 'Lexend', sans-serif;
-    font-size: 24px;
-    padding: 20px;
-}
-
-@media (max-width: 700px) {
-    .board-container {
-        width: 370px;
-    } 
-
-    .card {
-        width: 70px;
-        height: 70px;
-    }
-
-    .card-back {
-        line-height: 70px;
-    }
-
-    .card-back img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-    }
-}
+</body>
+</html>
