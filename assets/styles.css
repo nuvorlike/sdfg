@@ -1,0 +1,234 @@
+html {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(325deg, #6f00fc 0%, #fc7900 50%, #fcc500b9 100%);
+    font-family: 'Lexend', sans-serif;
+}
+
+body {
+    overflow: hidden;
+}
+
+.game {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+#rulesBtn {
+    flex: 1;
+    margin-right: 10px;
+    background: #282A3A;
+    color: #FFF;
+    border-radius: 5px;
+    padding: 10px 20px;
+    border: 0;
+    cursor: pointer;
+    font-family: 'Lexend', sans-serif;
+    font-size: 18pt;
+    box-shadow: 5px 3px 15px 1px darkblue;
+    transition: all 0.5s;
+}
+
+#rulesBtn:hover {
+    color: #ed977c;
+    background-color: #3e415a;
+}
+
+.stats {
+    flex: 2;
+    display: flex;
+    justify-content: space-around;
+    color: #FFF;
+    font-size: 14pt;
+    border: 1px dotted floralwhite;
+    padding: 10px;
+    border-radius: 7px;
+    box-shadow: 5px 3px 15px 1px darkblue;
+}
+
+.board-container {
+    position: relative;
+}
+
+.board, .win {
+    border-radius: 5px;
+    box-shadow: 0 25px 50px rgb(33 33 33 / 25%);
+    background: linear-gradient(135deg, #ffff00a8 0%, #ff7b00 50%, #ff2a00 100%);
+    transition: transform .6s cubic-bezier(0.4, 0.0, 0.2, 1);
+    backface-visibility: hidden;
+}
+
+.board {
+    padding: 20px;
+    display: grid;
+    grid-template-columns: repeat(4, auto);
+    grid-gap: 20px;
+}
+
+.board-container.flipped .board {
+    transform: rotateY(180deg) rotateZ(50deg);
+}
+
+.board-container.flipped .win {
+    transform: rotateY(0) rotateZ(0);
+}
+
+.card {
+    position: relative;
+    width: 100px;
+    height: 100px;
+    cursor: pointer;
+}
+
+.card-front, .card-back {
+    position: absolute;
+    border-radius: 5px;
+    width: 100%;
+    height: 100%;
+    background: #3a3328;
+    transition: transform .6s cubic-bezier(0.4, 0.0, 0.2, 1);
+    backface-visibility: hidden;
+}
+
+.card-back {
+    transform: rotateY(180deg) rotateZ(50deg);
+    user-select: none;
+    background: #FDF8E6;
+}
+
+.card-back img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.card.flipped .card-front {
+    transform: rotateY(180deg) rotateZ(50deg);
+}
+
+.card.flipped .card-back {
+    transform: rotateY(0) rotateZ(0);
+}
+
+.win {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    background: #FDF8E6;
+    transform: rotateY(180deg) rotateZ(50deg);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+#shareBtn, #replayBtn {
+    font-size: 16pt;
+    background: #282A3A;
+    color: #FFF;
+    border-radius: 5px;
+    padding: 10px 20px;
+    border: 0;
+    cursor: pointer;
+    font-family: 'Lexend', sans-serif;
+    margin: 10px;
+}
+
+.popup {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.4);
+}
+
+.popup-content {
+    background-color: #fefefe;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    max-width: 600px;
+    border-radius: 5px;
+}
+
+.scorecard-img {
+    max-width: 100%;
+    height: auto;
+    margin: 20px 0;
+    border-radius: 5px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover, .close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.error-message {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(325deg, #6f00fc 0%, #fc7900 50%, #fcc500b9 100%);
+    z-index: 1000;
+}
+
+.error-message h1 {
+    color: white;
+    text-align: center;
+    font-family: 'Lexend', sans-serif;
+    font-size: 24px;
+    padding: 20px;
+}
+
+@media (max-width: 700px) {
+    .board-container {
+        width: 370px;
+    } 
+
+    .card {
+        width: 70px;
+        height: 70px;
+    }
+
+    .card-back {
+        line-height: 70px;
+    }
+
+    .card-back img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+}
