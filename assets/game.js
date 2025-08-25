@@ -82,17 +82,18 @@ const generateGame = () => {
     }
 
     // Mengganti URL placeholder untuk menampilkan nama gambar, bukan hanya angka.
+    // Pastikan path ini sesuai dengan struktur folder proyek Anda.
     const images = [
-        'assets/images/image1.jpg',
-        'assets/images/image2.jpg',
-        'assets/images/image3.jpg',
-        'assets/images/image4.jpg',
-        'assets/images/image5.jpg',
-        'assets/images/image6.jpg',
-        'assets/images/image7.jpg',
-        'assets/images/image8.jpg',
-        'assets/images/image9.jpg',
-        'assets/images/image10.png'
+        'https://placehold.co/100x100/EBF4FA/000000?text=Image1',
+        'https://placehold.co/100x100/F9EBFA/000000?text=Image2',
+        'https://placehold.co/100x100/FAF3EB/000000?text=Image3',
+        'https://placehold.co/100x100/EBF9F3/000000?text=Image4',
+        'https://placehold.co/100x100/EBEFF9/000000?text=Image5',
+        'https://placehold.co/100x100/F9EBEB/000000?text=Image6',
+        'https://placehold.co/100x100/F8F9EB/000000?text=Image7',
+        'https://placehold.co/100x100/EBF9F9/000000?text=Image8',
+        'https://placehold.co/100x100/F3EBF9/000000?text=Image9',
+        'https://placehold.co/100x100/F9F0EB/000000?text=Image10'
     ];
     const picks = pickRandom(images, (dimensions * dimensions) / 2);
     const items = shuffle([...picks, ...picks]);
@@ -108,7 +109,10 @@ const generateGame = () => {
     `;
     
     const parser = new DOMParser().parseFromString(cards, 'text/html');
-    selectors.board.replaceWith(parser.querySelector('.board'));
+    // It's better to get a new reference to the board after replacing it
+    const newBoard = parser.querySelector('.board');
+    selectors.board.parentNode.replaceChild(newBoard, selectors.board);
+    selectors.board = newBoard; // Update the selector to the new board
 };
 
 const startGame = () => {
@@ -160,7 +164,8 @@ const flipCard = card => {
         }, 1000);
     }
 
-    if (!document.querySelectorAll('.card:not(.flipped)').length) {
+    // Use the updated board selector to query for cards
+    if (!selectors.board.querySelectorAll('.card:not(.flipped)').length) {
         setTimeout(() => {
             const scorecardImg = generateScorecardImage();
             selectors.boardContainer.classList.add('flipped');
