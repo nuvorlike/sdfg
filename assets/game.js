@@ -43,7 +43,7 @@ const generateTweetText = () => {
     const moves = state.totalFlips;
     const time = state.totalTime;
     const gameLink = window.location.href;
-    return `I just completed Brain Train Game (made by @AlicommPng) with ${moves} moves under ${time} secs\n\nTry it out this @sign themed game : ${gameLink}`;
+    return `I just completed Brain Train Game (made by @AlicommPng) with ${moves} moves under ${time} secs\n\nTry it out this @tenprotocol themed game : ${gameLink}`;
 };
 
 const generateScorecardImage = () => {
